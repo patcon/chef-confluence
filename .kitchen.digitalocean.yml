@@ -1,7 +1,11 @@
+#<% require 'kitchen-sync' %>
 driver:
   name: digitalocean
   private_networking: false
   size: 2gb
+
+transport:
+  name: sftp
 
 provisioner:
   client_rb:
