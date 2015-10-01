@@ -85,6 +85,8 @@ module ConfluenceHelpers
     # @param [String] arch Architecture (for "installer" type only)
     # @return [String] Download URL for Confluence artifact
     def self.get_artifact_url(node)
+      return node['confluence']['url'] unless node['confluence']['url'].nil?
+
       arch = get_arch(node)
       version = node['confluence']['version']
       install_type = node['confluence']['install_type']
@@ -104,6 +106,8 @@ module ConfluenceHelpers
     # @param [String] arch Architecture (for "installer" type only): "x64" or "x32"
     # @return [String] SHA256 checksum of specific Confluence artifact
     def self.get_artifact_checksum(node)
+      return node['confluence']['checksum'] unless node['confluence']['checksum'].nil?
+
       sums = checksum_map[version]
       arch = get_arch(node)
       version = node['confluence']['version']
