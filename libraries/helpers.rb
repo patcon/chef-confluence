@@ -15,14 +15,14 @@
 # limitations under the License.
 #
 
-module Confluence
+module ConfluenceHelpers
   # Confluence::Helpers module
-  module Helpers
+  module Confluence
     # Detects current Confluence version.
     # Returns nil if Confluence isn't installed.
     #
     # @return [String] Confluence version
-    def confluence_version
+    def self.version(node)
       pom_file = File.join(
         node['confluence']['install_path'],
         '/confluence/META-INF/maven/com.atlassian.confluence/confluence-webapp/pom.properties'
@@ -40,8 +40,8 @@ module Confluence
     # Data dag settings always has a higher priority.
     #
     # @return [Hash] Settings hash
-    def merge_confluence_settings
-      @settings_from_data_bag ||= settings_from_data_bag
+    def self.merged_settings(node)
+      @settings_from_data_bag ||= settings_from_data_bag(node)
       settings = Chef::Mixin::DeepMerge.deep_merge(
         @settings_from_data_bag,
         node['confluence'].to_hash
@@ -62,7 +62,7 @@ module Confluence
     # Fetchs Confluence settings from the data bag
     #
     # @return [Hash] Settings hash
-    def settings_from_data_bag
+    def self.settings_from_data_bag(node)
       item =
       begin
         if Chef::Config[:solo]
@@ -84,7 +84,7 @@ module Confluence
     # @param [String] install_type Installation type: "installer" or "standalone"
     # @param [String] arch Architecture (for "installer" type only)
     # @return [String] Download URL for Confluence artifact
-    def get_artifact_url(version, install_type, arch)
+    def self.get_artifact_url(version, install_type, arch)
       case install_type
       when 'installer'
         "http://www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-#{version}-#{arch}.bin"
@@ -99,7 +99,7 @@ module Confluence
     # @param [String] install_type Installation type: "installer" or "standalone"
     # @param [String] arch Architecture (for "installer" type only): "x64" or "x32"
     # @return [String] SHA256 checksum of specific Confluence artifact
-    def get_artifact_checksum(version, install_type, arch)
+    def self.get_artifact_checksum(version, install_type, arch)
       sums = checksum_map[version]
       fail "Confluence version #{version} is not supported by the cookbook" unless sums
 
@@ -111,7 +111,7 @@ module Confluence
 
     # rubocop:disable Metrics/MethodLength
     # Returns SHA256 checksum map for Confluence artifacts
-    def checksum_map
+    def self.checksum_map
       {
         '4.3.7' => {
           'x32' => '6612ab99ae0cf3ab240f9d9413a25bfe84b3f729cbb12ee4bee4e11a424513d0',
@@ -244,4 +244,4 @@ module Confluence
   end
 end
 
-::Chef::Recipe.send(:include, Confluence::Helpers)
+::Chef::Recipe.send(:include, ConfluenceHelpers)

@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-settings = merge_confluence_settings
+settings = Confluence.merged_settings(node)
 
 database_connection = {
   :host => settings['database']['host'],

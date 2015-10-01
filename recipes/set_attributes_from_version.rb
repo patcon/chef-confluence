@@ -19,13 +19,13 @@
 # If you need to override this in an attribute file you should use
 # 'force_default' or higher precedence.
 
-node.default['confluence']['url'] = get_artifact_url(
+node.default['confluence']['url'] = Confluence.get_artifact_url(
   node['confluence']['version'],
   node['confluence']['install_type'],
   node['confluence']['arch']
 )
 
-node.default['confluence']['checksum'] = get_artifact_checksum(
+node.default['confluence']['checksum'] = Confluence.get_artifact_checksum(
   node['confluence']['version'],
   node['confluence']['install_type'],
   node['confluence']['arch']

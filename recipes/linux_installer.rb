@@ -17,10 +17,10 @@
 # limitations under the License.
 #
 
-settings = merge_confluence_settings
+settings = Confluence.merged_settings(node)
 
 # Install or upgrade confluence
-if confluence_version != node['confluence']['version']
+if Confluence.version(node) != node['confluence']['version']
   template "#{Chef::Config[:file_cache_path]}/atlassian-confluence-response.varfile" do
     source 'response.varfile.erb'
     owner 'root'
