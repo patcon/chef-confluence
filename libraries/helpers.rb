@@ -84,7 +84,11 @@ module ConfluenceHelpers
     # @param [String] install_type Installation type: "installer" or "standalone"
     # @param [String] arch Architecture (for "installer" type only)
     # @return [String] Download URL for Confluence artifact
-    def self.get_artifact_url(version, install_type, arch)
+    def self.get_artifact_url(node)
+      arch = get_arch(node)
+      version = node['confluence']['version']
+      install_type = node['confluence']['install_type']
+
       case install_type
       when 'installer'
         "http://www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-#{version}-#{arch}.bin"
@@ -99,14 +103,22 @@ module ConfluenceHelpers
     # @param [String] install_type Installation type: "installer" or "standalone"
     # @param [String] arch Architecture (for "installer" type only): "x64" or "x32"
     # @return [String] SHA256 checksum of specific Confluence artifact
-    def self.get_artifact_checksum(version, install_type, arch)
+    def self.get_artifact_checksum(node)
       sums = checksum_map[version]
+      arch = get_arch(node)
+      version = node['confluence']['version']
+      install_type = node['confluence']['install_type']
+
       fail "Confluence version #{version} is not supported by the cookbook" unless sums
 
       case install_type
-      when 'installer' then sums[arch.to_s]
+      when 'installer' then sums[arch]
       when 'standalone' then sums['tar']
       end
+    end
+
+    def self.get_arch(node)
+      (node['kernel']['machine'] == 'x86_64') ? 'x64' : 'x32'
     end
 
     # rubocop:disable Metrics/MethodLength

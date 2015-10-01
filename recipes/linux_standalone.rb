@@ -52,10 +52,10 @@ execute 'Generating Self-Signed Java Keystore' do
 end
 
 ark 'confluence' do
-  url node['confluence']['url']
+  url Confluence.get_artifact_url(node)
   prefix_root File.dirname(node['confluence']['install_path'])
   home_dir node['confluence']['install_path']
-  checksum node['confluence']['checksum']
+  checksum Confluence.get_artifact_checksum(node)
   version node['confluence']['version']
   owner node['confluence']['user']
   group node['confluence']['user']

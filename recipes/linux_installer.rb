@@ -32,8 +32,8 @@ if Confluence.version(node) != node['confluence']['version']
   end
 
   remote_file "#{Chef::Config[:file_cache_path]}/atlassian-confluence-#{node['confluence']['version']}-#{node['confluence']['arch']}.bin" do
-    source node['confluence']['url']
-    checksum node['confluence']['checksum']
+    source Confluence.get_artifact_url(node)
+    checksum Confluence.get_artifact_checksum(node)
     mode '0755'
     action :create
   end
